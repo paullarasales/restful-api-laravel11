@@ -2,65 +2,84 @@
 
 namespace App\Http\Controllers;
 
+use App\Interfaces\ProductRepositoryInterface;
+use App\Http\Resources\ProductResource;
+use Illuminate\Support\Facades\DB;
+use App\Classes\ResponseClass;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    private ProductRepositoryInterface $productRepositoryInterface;
+
+    public function __construct(ProductRepository $productRepositoryInterface)
     {
-        //
+        $this->productRepositoryInterface = $productRepositoryInterface;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    public function index() 
+    {
+        $data = $this->productRepositoryInterface->index();
+
+        return ResponseClass::sendResponse(ProductResource::collection($data),'',200);
+    }
+
     public function create()
     {
-        //
+
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreProductRequest $request)
     {
-        //
+        $details = [
+            'name' => $request->name,
+            'details' => $request->details
+        ];
+        DB::beginTransaction();
+        try {
+            $product = $this->productRepositoryInterface->store($details);
+            DB::commit();
+            return ResponseClass::sendResponse(new ProductResource($product),'Product Create Successful',201);
+        } catch(\Exception $ex){
+            return ResponseClass::rollback($ex);
+          }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Product $product)
+    public function show($id)
     {
-        //
-    }
+        $product = $this->productRepositoryInterface->getById($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+        return ResponseClass::sendResponse(new ProductResource($product),'',200);
+    }
+    
     public function edit(Product $product)
     {
-        //
+
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(UpdateProductRequest $request, $id)
     {
-        //
+        $updateDetails = [
+            'name' => $request->name,
+            'details' => $request->details
+        ];
+        DB::beginTransaction();
+        try {
+            $product = $this->productRepositoryInterface->update($updateDetails,$id);
+
+            DB::commit();
+            return ResponseClass::sendResponse('Product Updated Successful','',201);
+        }catch(\Exception $ex){
+            return ResponseClass::rollback($ex);
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Product $product)
+    public function destroy($id)
     {
-        //
+        $this->productRepositoryInterface->delete($id);
+
+        return ResponseClass::sendResponse('Product Delete Successful','',204);
     }
 }
