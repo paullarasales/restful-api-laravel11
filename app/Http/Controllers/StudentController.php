@@ -4,16 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
+use App\Interfaces\StudentRepositoryInterface;
+use App\Classes\ApiResponseClass;
+use App\Http\Resource\StudentResource;
+use Illuminate\Support\Facades\DB;
 use App\Models\Student;
 
 class StudentController extends Controller
 {
+    private StudentRepositoryInterface $studentRepositoryInterface;
+
+    public function __construct(StudentRepositoryInterface $studentRepositoryInterface) {
+        return $this->studentRepositoryInterface = $studentRepositoryInterface; 
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $data = $this->studentRepositoryInterface->index();
+
+        return ApiResponseClass::sendResponse(StudentResource::collection($data),'',200);
     }
 
     /**
@@ -29,7 +41,21 @@ class StudentController extends Controller
      */
     public function store(StoreStudentRequest $request)
     {
-        //
+        $details = [
+            'firstname' => $request->firstname,
+            'middlename' => $request->middlename,
+            'lastname' => $request->lastname,
+            'age' => $request->age
+        ];
+        DB::beginTransaction();
+        try {
+            $student = $this->studentRepositoryInterface->store($details);
+
+            DB::commit();
+            return ApiResponseClass::sendResponse(new StudentResource($details),'Successfully Added New Data',201);
+        }catch(\Exception $ex) {
+            return ApiResponseClass::rollback($ex);
+        }
     }
 
     /**
