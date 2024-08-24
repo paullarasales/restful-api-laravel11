@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repositories;
 use App\Models\Product;
 use App\Interfaces\ProductRepositoryInterface;
-class ProductReposiotry implements ProductRepositoryInterface
+class ProductRepository implements ProductRepositoryInterface
 {
     public function index(){
-        return Product::all();
+        return Product::limit(3)->get();
     }
 
     public function getById($id){
