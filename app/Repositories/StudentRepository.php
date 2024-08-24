@@ -6,11 +6,28 @@ use App\Interfaces\StudentRepositoryInterface;
 
 class StudentRepository implements StudentRepositoryInterface
 {
-    /**
-     * Create a new class instance.
-     */
-    public function __construct()
+    public function index()
     {
-        //
+        return Student::limit(4)->get();
+    }
+
+    public function getById($id)
+    {
+        return Product::findOrFail($id);
+    }
+
+    public function store(array $data)
+    {
+        return Product::create($data);
+    }
+
+    public function updata(array $data,$id)
+    {
+        return Student::whereIn($id)->update($data);
+    }
+
+    public function destroy($id) 
+    {
+        Student::destroy($id);
     }
 }
