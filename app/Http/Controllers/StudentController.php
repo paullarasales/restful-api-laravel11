@@ -61,9 +61,11 @@ class StudentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Student $student)
+    public function show($id)
     {
-        //
+        $student = $this->studentRepositoryInterface->getById($id);
+
+        return ApiResponseClass::sendResponse(new StudentResource($student),'',200);
     }
 
     /**
@@ -77,16 +79,32 @@ class StudentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateStudentRequest $request, Student $student)
+    public function update(UpdateStudentRequest $request, $id)
     {
-        //
+        $updateDetails = [
+            'firstname' => $request->firstname,
+            'middlename' => $request->middlename,
+            'lastname' => $request->lastname,
+            'age' => $request->age
+        ];
+        DB::beginTransaction();
+        try {
+            $student = $this->studentRepositoryInterface->update($updateDetails,$id);
+
+            DB::commit();
+            return ApiResposeClass::sendResponse('Student Update Success','',201);
+        }catch(\Exception $ex) {
+            return ApiResponseClass::rollback($ex);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Student $student)
+    public function destroy($id)
     {
-        //
+        $this->studentRepositoryInterface->delete($id);
+
+        return ApiResponseClass::sendResponse('Student Delete Successful','',204);
     }
 }
