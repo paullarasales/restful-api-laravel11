@@ -21,12 +21,12 @@ class StudentRepository implements StudentRepositoryInterface
         return Product::create($data);
     }
 
-    public function updata(array $data,$id)
+    public function update(array $data,$id)
     {
         return Student::whereIn($id)->update($data);
     }
 
-    public function destroy($id) 
+    public function delete($id) 
     {
         Student::destroy($id);
     }

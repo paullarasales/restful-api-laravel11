@@ -6,7 +6,7 @@ use App\Http\Requests\StoreStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
 use App\Interfaces\StudentRepositoryInterface;
 use App\Classes\ApiResponseClass;
-use App\Http\Resource\StudentResource;
+use App\Http\Resources\StudentResource;
 use Illuminate\Support\Facades\DB;
 use App\Models\Student;
 
