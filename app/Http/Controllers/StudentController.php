@@ -41,23 +41,23 @@ class StudentController extends Controller
      */
     public function store(StoreStudentRequest $request)
     {
-        $details = [
+        $details =[
             'firstname' => $request->firstname,
             'middlename' => $request->middlename,
             'lastname' => $request->lastname,
             'age' => $request->age
         ];
         DB::beginTransaction();
-        try {
-            $student = $this->studentRepositoryInterface->store($details);
+        try{
+             $student = $this->studentRepositoryInterface->store($details);
 
-            DB::commit();
-            return ApiResponseClass::sendResponse(new StudentResource($details),'Successfully Added New Data',201);
-        }catch(\Exception $ex) {
+             DB::commit();
+             return ApiResponseClass::sendResponse(new StudentResource($student),'Student Create Successful',201);
+
+        }catch(\Exception $ex){
             return ApiResponseClass::rollback($ex);
         }
     }
-
     /**
      * Display the specified resource.
      */
