@@ -1,6 +1,7 @@
 <?php
 
 return [
+    App\Providers\AnimeServiceProvider::class,
     App\Providers\AppServiceProvider::class,
     App\Providers\RepositoryServiceProvider::class,
     App\Providers\StudentServiceProvider::class,
