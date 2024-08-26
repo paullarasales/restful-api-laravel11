@@ -24,7 +24,7 @@ class AnimeRepository implements AnimeRepositoryInterface
 
     public function update(array $data,$id) 
     {
-        return Anime::whereID($id)->update($data);
+        return Anime::findOrFail($id)->update($data);
     }
 
     public function delete($id)
