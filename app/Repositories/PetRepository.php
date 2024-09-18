@@ -4,7 +4,7 @@ namespace App\Repositories;
 use App\Models\Pet;
 use App\Interfaces\PetRepositoryInterface;
 
-class PetRepository
+class PetRepository implements PetRepositoryInterface
 {
    public function index()
    {

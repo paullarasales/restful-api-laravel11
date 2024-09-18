@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 
-class StorePetRequest extends FormRequest
+class StoreEmployeeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,13 +26,13 @@ class StorePetRequest extends FormRequest
         return [
             'name' => 'required',
             'age' => 'required',
-            'breed' => 'required'
+            'position' => 'required'
         ];
     }
 
     public function failedValidation(Validator $validator)
     {
-        throw new HttpResponseException(response()->json([
+        throw new HttpResponseException(response->json([
             'success' => false,
             'message' => 'Validation errors',
             'data' => $validator->errors()
